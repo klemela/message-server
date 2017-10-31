@@ -1,4 +1,5 @@
 const restify = require('restify');
+const corsMiddleware = require('restify-cors-middleware');
 
 export class MessageServer {
 	messages = [];
@@ -7,6 +8,10 @@ export class MessageServer {
 		const server = restify.createServer();
 
 		server.use(restify.plugins.bodyParser());
+
+		const cors = corsMiddleware({origins: ['*']});
+		server.pre(cors.preflight);
+		server.use(cors.actual);
 
 		server.post('/', (req, res, next) => {
 			console.log('POST reqeust', req.body);
